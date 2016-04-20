@@ -5,12 +5,12 @@ I made this so that all of my other settings (really just the font) wouldn't cha
 every time I wanted to change color scheme.
 Every input and output file is an xfce4-terminalrc
 
-TODO: add support for foreground and background
-add support for all color options
+TODO: add support for all color options
 """
 
 import sys
 
+terminalrcLocation="/home/jeremy/.config/xfce4/terminal/terminalrc"
 
 def getForeground(themeFile):
     """
@@ -21,7 +21,7 @@ def getForeground(themeFile):
             return line[16:]
 
 
-def setForeground(fgColor, terminalrcLocation="/home/jeremy/.config/xfce4/terminal/terminalrc"):
+def setForeground(fgColor):
     """
     Takes a single color code for the foreground (text color) and applies it to a terminalrc file
 
@@ -39,6 +39,7 @@ def setForeground(fgColor, terminalrcLocation="/home/jeremy/.config/xfce4/termin
     terminalrc.truncate()
     terminalrc.write(filebefore)
     terminalrc.close()
+    print("Foreground changed")
 
 
 def getBackground(themeFile):
@@ -50,7 +51,7 @@ def getBackground(themeFile):
             return line[16:]
 
 
-def setBackground(bgColor, terminalrcLocation="/home/jeremy/.config/xfce4/terminal/terminalrc"):
+def setBackground(bgColor):
     """
     Takes a single color code for the foreground (text color) and applies it to a terminalrc file
 
@@ -68,6 +69,7 @@ def setBackground(bgColor, terminalrcLocation="/home/jeremy/.config/xfce4/termin
     terminalrc.truncate()
     terminalrc.write(filebefore)
     terminalrc.close()
+    print("Background changed")
 
 
 def getColors(configFileName):
@@ -82,7 +84,7 @@ def getColors(configFileName):
            return line[13:]
         
 
-def setColors(newColors, terminalrcLocation="/home/jeremy/.config/xfce4/terminal/terminalrc"):
+def setColors(newColors):
     """
     Takes a string of color odes and replaces the colors currently set in terminalrc.
  
@@ -105,7 +107,7 @@ def setColors(newColors, terminalrcLocation="/home/jeremy/.config/xfce4/terminal
     terminalrc.close()
 
             
-def saveColors(themeName, sourceFile="/home/jeremy/.config/xfce4/terminal/terminalrc"):
+def saveColors(themeName, sourceFile=terminalrcLocation):
     """
     Saves the current color configuration to a file named by the parameter
 
@@ -134,11 +136,11 @@ if __name__=="__main__":
             saveColors(config)
         elif sys.argv[1] == "load": # Or if we're loading an existing config
             setColors(getColors(config)) # Always set the colors
-            for i in range(4, len(sys.argv)): # Check for additional arguments (i.e. fg and bg)
+            for i in range(3, len(sys.argv)): # Check for additional arguments (i.e. fg and bg)
                 if sys.argv[i] == "fg":
                     setForeground(getForeground(config))
                 elif sys.argv[i] == "bg":
                     setBackground(getBackground(config))
 
 
-
+# End of file
