@@ -9,41 +9,39 @@ Designed because I wanted a reusable script to change typical config files into 
 
 import sys
 
-def changeColor(colorCode):
-    """
-    Take a 6-digit color code and return a 12-digit equivalent.
-
-    The color code must be prefixed by the accompanying "#" symbol.
-
-    colorCode: String, color code in the form of #123456
-    return: String, color code in the form #112233445566
-    """
-    newColorCode = "#"
-    newColorCode += colorCode[1:3] + colorCode[1:3]
-    newColorCode += colorCode[3:5] + colorCode[3:5]
-    newColorCode += colorCode[5:] + colorCode[5:]
-    return newColorCode
-
 def getNewColors(filename):
     """
     Take a line of text and "extract" all of the color codes from it.
 
-    line: String, line of text with or without color codes
-    return: String, any color codes found in the text, changed from 6 to 12 digit, separated by semicolons
+    Args:
+        line: String, line of text with or without color codes
+
+    Returns:
+        String: any color codes found in the text separated by semicolons
     """
-    newColors = ""
+    colorList = [""]*16 
     for line in open(filename):     # For each line in the file,
         for i in range(len(line)):  # we check the letters to see 
-            if line[i] == "#":      # if there is a # (indicating a color code)
-                newColors += changeColor(line[i:i+7]) + ";"
-    newColors = newColors[:-1] # Remove the last semicolon
-    return newColors
+            if line[i:i+5] == "color":
+                index = line[i+5]
+                if line[i+6] != ":":
+                    index = line[i+5:i+7]
+                index = int(index)
+                colorList[index] = line.split()[1]
+    newColors = ""
+    for color in colorList:
+        newColors += color + ";"
+    return newColors[:-1]
 
 def setColors(newColors, terminalrcLocation="/home/jeremy/.config/xfce4/terminal/terminalrc"):
     """
-    Takes a string of color codes and replaces the colors currently set in terminalrc.
+    Take a string of color codes and replace the colors currently set in terminalrc.
 
     Can also take an argument for where the terminalrc is
+
+    Args:
+        newColors (str): 16 color codes separated by semicolons (no spaces)
+        terminalrcLocation (str): Path to the xfce4-terminal config file
     """
     verify = input("Have you saved the current color scheme? (y/n) ")
     if verify != "y":
@@ -66,7 +64,7 @@ def main(args):
     """
     Loop through a file and change the current settings in terminalrc
 
-    filename: String, name of file to open containig 6-digit color codes to change
+    filename: String, name of file to open containing 6-digit color codes to change
     """
     newColors = getNewColors(args[1])
     if (len(args) == 3):
