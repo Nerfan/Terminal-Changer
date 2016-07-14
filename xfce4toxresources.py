@@ -2,6 +2,9 @@
 Read colors from a current xfce4-terminal configuration and save to .Xresources
 """
 
+from os import getenv
+HOME = getenv("HOME")
+
 def extract_colors(filename):
     """
     Get the line containing color codes
@@ -15,7 +18,7 @@ def extract_colors(filename):
     file = open(filename)
     for line in file:
         if line[0:12] == "ColorPalette":
-            return line[13:-2]
+            return line[13:-1]
     return ""
 
 def change_color_codes(color_line):
@@ -30,21 +33,25 @@ def change_color_codes(color_line):
     """
     colors = color_line.split(";")
     newcolors = []
-    print(colors)
-    for color in colors: # TODO vary based on 6 or 12 digit
-        newcolor = "#" + color[1:3] + color[5:7] + color[9:11]
-        newcolors.append(newcolor)
+    for color in colors:
+        if len(color) == 13:
+            newcolor = "#" + color[1:3] + color[5:7] + color[9:11]
+            newcolors.append(newcolor)
+        elif len(color) == 7:
+            newcolor.append(color)
     return newcolors
 
 def apply_colors(colors):
     """
     Apply colors to .Xresouces
+
+    Overwrites any color settings already present
     
     Args:
         colors (list of str): Colors to apply, in order
     """
     i = 0
-    xresources = open("/home/jeremy/.Xresources")
+    xresources = open(HOME + "/.Xresources")
     text = ""
     for line in xresources:
         if (line[1:7] == "color" + str(i)):
@@ -55,10 +62,13 @@ def apply_colors(colors):
             i += 1
         else:
             text += line
+    while i < 16:
+        text += line[0:9] + "       " + colors[i] + "\n"
+        i += 1
     xresources.close()
-    xresources = open("/home/jeremy/.Xresources", "w")
+    xresources = open(HOME + "/.Xresources", "w")
     xresources.truncate()
     xresources.write(text)
     xresources.close()
 
-apply_colors(change_color_codes(extract_colors("/home/jeremy/.config/xfce4/terminal/terminalrc")))
+apply_colors(change_color_codes(extract_colors(HOME + "/.config/xfce4/terminal/terminalrc")))

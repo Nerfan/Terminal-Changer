@@ -2,6 +2,8 @@
 Save the current color scheme to a preset
 """
 
+import sys
+
 def get_colors():
     """
     Get all of the color options from the current terminalrc
@@ -34,4 +36,12 @@ def write_scheme(name, color_options):
             + color_options)
     schemeFile.close()
 
-write_scheme('test', get_colors())
+if __name__ == "__main__":
+    if len(sys.argv) == 1:
+        name = input("Name of theme to be saved? ")
+    else:
+        name = sys.argv[1]
+    try:
+        write_scheme(name, get_colors())
+    except PermissionError:
+        print("Could not access necessary directory. Try running with sudo?")

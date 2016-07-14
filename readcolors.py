@@ -8,6 +8,9 @@ Designed because I wanted a reusable script to change Xresources config files in
 """
 
 import sys
+from os import getenv
+
+HOME = getenv("HOME")
 
 def get_new_colors(filename):
     """
@@ -33,7 +36,7 @@ def get_new_colors(filename):
         new_colors += color + ";"
     return new_colors[:-1]
 
-def set_colors(new_colors, terminalrc_location="/home/jeremy/.config/xfce4/terminal/terminalrc"):
+def set_colors(new_colors, terminalrc_location=HOME + "/.config/xfce4/terminal/terminalrc"):
     """
     Take a string of color codes and replace the colors currently set in terminalrc.
 
