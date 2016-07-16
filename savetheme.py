@@ -3,6 +3,9 @@ Save the current color scheme to a preset
 """
 
 import sys
+from os import getenv, makedirs
+from os.path import isdir
+HOME = getenv("HOME")
 
 def get_colors():
     """
@@ -11,7 +14,7 @@ def get_colors():
     Returns:
         str: All color options as they appeared in the terminalrc file
     """
-    terminalrc = open("/home/jeremy/.config/xfce4/terminal/terminalrc")
+    terminalrc = open(HOME + "/.config/xfce4/terminal/terminalrc")
     colors = ""
     for line in terminalrc:
         if line[0 : 5] == "Color":
@@ -19,29 +22,28 @@ def get_colors():
     terminalrc.close()
     return colors
 
-def write_scheme(name, color_options):
+def write_scheme(theme_name, color_options):
     """
     Save options to a preset
 
     Args:
-        name (str): Name of the theme to be saved
+        theme_name (str): Name of the theme to be saved
         color_options (str): Any and all options to be saved
                             These just get written directly to a file
     """
-    schemeFile = open((
-        "/usr/share/xfce4/terminal/colorschemes/" + name + ".theme"), "w")
-    schemeFile.write(
-            "[Scheme]\n"
-            + "Name=" + name + "\n"
-            + color_options)
-    schemeFile.close()
+    if not isdir(HOME + "/.local/share/xfce4/terminal/colorschemes"):
+        makedirs(HOME + "/.local/share/xfce4/terminal/colorschemes")
+    scheme_file = open((
+        HOME + "/.local/share/xfce4/terminal/colorschemes/" +\
+        theme_name + ".theme"), "w+")
+    scheme_file.write(
+        "[Scheme]\n"
+        + "Name=" + theme_name + "\n"
+        + color_options)
+    scheme_file.close()
 
 if __name__ == "__main__":
     if len(sys.argv) == 1:
-        name = input("Name of theme to be saved? ")
+        print("usage: python3.5 savetheme.py themename")
     else:
-        name = sys.argv[1]
-    try:
-        write_scheme(name, get_colors())
-    except PermissionError:
-        print("Could not access necessary directory. Try running with sudo?")
+        write_scheme(sys.argv[1], get_colors())

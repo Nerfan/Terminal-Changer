@@ -15,8 +15,8 @@ def extract_colors(filename):
     Returns:
         str: All color codes in order
     """
-    file = open(filename)
-    for line in file:
+    terminalrc = open(filename)
+    for line in terminalrc:
         if line[0:12] == "ColorPalette":
             return line[13:-1]
     return ""
@@ -46,7 +46,7 @@ def apply_colors(colors):
     Apply colors to .Xresouces
 
     Overwrites any color settings already present
-    
+
     Args:
         colors (list of str): Colors to apply, in order
     """
@@ -54,16 +54,16 @@ def apply_colors(colors):
     xresources = open(HOME + "/.Xresources")
     text = ""
     for line in xresources:
-        if (line[1:7] == "color" + str(i)):
+        if line[1:7] == "color" + str(i):
             text += line[0:9] + "       " + colors[i] + "\n"
             i += 1
-        elif (line[1:8] == "color" + str(i)):
+        elif line[1:8] == "color" + str(i):
             text += line[0:9] + "       " + colors[i] + "\n"
             i += 1
         else:
             text += line
     while i < 16:
-        text += line[0:9] + "       " + colors[i] + "\n"
+        text += "color" + str(i)  + ":       " + colors[i] + "\n"
         i += 1
     xresources.close()
     xresources = open(HOME + "/.Xresources", "w")
