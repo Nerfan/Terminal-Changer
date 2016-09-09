@@ -23,7 +23,7 @@ def get_new_colors(filename):
     Returns:
         str: any color codes found in the text separated by semicolons
     """
-    colorList = [""]*16 
+    color_list = [""]*16
     for line in open(filename):
         for i in range(len(line)):
             if line[i:i+5] == "color" and line[i+5].isdigit():
@@ -31,13 +31,13 @@ def get_new_colors(filename):
                 if line[i+6] != ":":
                     index = line[i+5:i+7]
                 index = int(index)
-                colorList[index] = line.split()[1]
+                color_list[index] = line.split()[1]
     new_colors = ""
-    for color in colorList:
+    for color in color_list:
         new_colors += color + ";"
     return new_colors[:-1]
 
-def set_colors(new_colors, terminalrc_location=HOME + "/.config/xfce4/terminal/terminalrc"):
+def set_colors(new_colors, terminalrc_location):
     """
     Take a string of color codes and apply to terminalrc.
 
@@ -72,16 +72,16 @@ def main(sourcefile=HOME + "/.Xresources", terminalrc=HOME + "/.config/xfce4/ter
         sourcefile (str): Name of file to open containing the source colors
         terminalrc (str): Path to terminalrc file
     """
-    new_colors = get_new_colors(args[1])
-    if (len(args) == 3):
-        set_colors(new_colors, args[2])
-    else:
-        set_colors(new_colors)
+    new_colors = get_new_colors(sourcefile)
+    set_colors(new_colors, terminalrc)
 
-if __name__=="__main__":
+if __name__ == "__main__":
     if len(sys.argv) > 3:
         print("Usage: python3.5 colorsToXfce4Terminal.py [sourcefile] [terminalrc]")
         exit(0)
     elif len(sys.argv) < 2:
         main()
-    main(sys.argv[1], sys.argv[2])
+    elif len(sys.argv) == 2:
+        main(sys.argv[1])
+    else:
+        main(sys.argv[1], sys.argv[2])
