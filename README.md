@@ -3,7 +3,7 @@ Small scripts that I made to make my terminal configuring life easier.
 
 Since nobody uses xfce4-terminal and everyone uses urxvt, I wanted to make something to change a .Xresources terminal color scheme into one compatible with xfce4-terminal.
 Thus the xresourcestoxfce4.py script was created. Simply running it with no arguments takes the colors in ~/.Xresources and applies them in ~/.config/xfce4/terminal/terminalrc.
-You can also supply arguments ti direct the script to read from and write to specific locations. The arguments come in that order. For example:
+You can also supply arguments to direct the script to read from and write to specific locations. The arguments come in that order. For example:
 ```
 $ python3.5 xresourcestoxfce4.py colorsource.txt terminalrclocation
 ```
